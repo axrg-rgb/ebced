@@ -1,402 +1,536 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ebced Hesaplayıcı</title>
+    <title>iPhone GPU FPS Test</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
         
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
             min-height: 100vh;
-            padding: 20px;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            padding: 20px;
         }
         
         .container {
-            max-width: 500px;
-            margin: 0 auto;
+            max-width: 800px;
             width: 100%;
-            background-color: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        header {
-            background: linear-gradient(135deg, #4A6FA5, #2C3E50);
-            color: white;
-            padding: 25px 20px;
             text-align: center;
         }
         
         h1 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 5px;
+            margin: 20px 0;
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #ff7e5f, #feb47b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
         
-        .subtitle {
-            font-size: 16px;
-            opacity: 0.9;
-        }
-        
-        .content {
+        .info-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
             padding: 20px;
-            flex-grow: 1;
+            margin: 20px 0;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .stats {
             display: flex;
-            flex-direction: column;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 20px 0;
         }
         
-        .input-section {
-            margin-bottom: 25px;
-        }
-        
-        .input-group {
-            margin-bottom: 15px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #2C3E50;
-        }
-        
-        textarea {
-            width: 100%;
-            height: 120px;
-            padding: 15px;
-            border: 2px solid #E0E0E0;
-            border-radius: 12px;
-            font-size: 18px;
-            resize: none;
-            transition: border-color 0.3s;
-        }
-        
-        textarea:focus {
-            outline: none;
-            border-color: #4A6FA5;
-        }
-        
-        .language-selector {
-            display: flex;
-            background-color: #F5F5F5;
-            border-radius: 12px;
-            padding: 5px;
-            margin-bottom: 20px;
-        }
-        
-        .lang-option {
-            flex: 1;
-            text-align: center;
-            padding: 12px;
+        .stat-box {
+            background: rgba(0, 0, 0, 0.3);
             border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
+            padding: 15px;
+            margin: 10px;
+            min-width: 150px;
+            flex: 1;
         }
         
-        .lang-option.active {
-            background-color: #4A6FA5;
-            color: white;
-        }
-        
-        .calculate-btn {
-            background: linear-gradient(135deg, #4A6FA5, #2C3E50);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            padding: 16px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            margin-top: 10px;
-        }
-        
-        .calculate-btn:active {
-            transform: scale(0.98);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        }
-        
-        .results-section {
-            background-color: #F9F9F9;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 20px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .result-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: #2C3E50;
-            text-align: center;
-        }
-        
-        .result-value {
-            font-size: 42px;
-            font-weight: 700;
-            text-align: center;
-            color: #4A6FA5;
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
             margin: 10px 0;
         }
         
-        .result-details {
-            margin-top: 15px;
-            font-size: 16px;
-            line-height: 1.5;
-            color: #555;
+        .fps-value {
+            color: #4cd964;
         }
         
-        .char-list {
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background: linear-gradient(90deg, #ff7e5f, #feb47b);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(255, 126, 95, 0.4);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 126, 95, 0.6);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        button:disabled {
+            background: #666;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+        
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 20px auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        canvas {
+            width: 100%;
+            height: 300px;
+            display: block;
+            background: #000;
+        }
+        
+        .test-options {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 15px;
             justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
         }
         
-        .char-item {
-            background-color: #E8EEF7;
-            border-radius: 8px;
-            padding: 8px 12px;
-            font-size: 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-width: 60px;
+        .option-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
         
-        .char {
-            font-size: 20px;
-            font-weight: 700;
+        .active {
+            background: linear-gradient(90deg, #4cd964, #5ac8fa);
+            border: none;
         }
         
-        .char-value {
-            font-size: 14px;
-            color: #4A6FA5;
-            margin-top: 5px;
+        .results {
+            margin-top: 30px;
+            text-align: left;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
         }
         
-        .footer {
+        .results h3 {
+            margin-bottom: 15px;
             text-align: center;
-            padding: 15px;
-            color: #777;
-            font-size: 14px;
-            border-top: 1px solid #E0E0E0;
         }
         
-        @media (max-width: 500px) {
-            .char-list {
-                gap: 8px;
-            }
-            
-            .char-item {
-                min-width: 55px;
-                padding: 6px 10px;
-            }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        @media (prefers-color-scheme: dark) {
-            body {
-                background: linear-gradient(135deg, #2C3E50 0%, #1A2530 100%);
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
             }
             
-            .container {
-                background-color: #2C3E50;
-                color: #F5F5F5;
+            .stat-value {
+                font-size: 2rem;
             }
             
-            textarea {
-                background-color: #34495E;
-                border-color: #4A6FA5;
-                color: #F5F5F5;
-            }
-            
-            .language-selector {
-                background-color: #34495E;
-            }
-            
-            .results-section {
-                background-color: #34495E;
-            }
-            
-            .char-item {
-                background-color: #4A6FA5;
-            }
-            
-            .footer {
-                border-color: #4A6FA5;
+            .stats {
+                flex-direction: column;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Ebced Hesaplayıcı</h1>
-            <p class="subtitle">Arapça ve Türkçe Ebced Değerlerini Hesaplayın</p>
-        </header>
+        <h1>iPhone GPU FPS Test</h1>
         
-        <div class="content">
-            <div class="input-section">
-                <div class="input-group">
-                    <label for="textInput">Metin Girin:</label>
-                    <textarea id="textInput" placeholder="Ebced değerini hesaplamak istediğiniz metni buraya yazın..."></textarea>
-                </div>
-                
-                <div class="language-selector">
-                    <div class="lang-option active" data-lang="arabic">Arapça</div>
-                    <div class="lang-option" data-lang="turkish">Türkçe</div>
-                </div>
-                
-                <button class="calculate-btn" id="calculateBtn">HESAPLA</button>
+        <div class="info-box">
+            <p>Deze test meet de prestaties van de GPU in je iPhone door de frames per seconde (FPS) te berekenen tijdens het renderen van complexe 3D graphics.</p>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-box">
+                <div>Huidige FPS</div>
+                <div class="stat-value fps-value" id="fps">0</div>
+                <div>Frames per seconde</div>
             </div>
-            
-            <div class="results-section">
-                <div class="result-title">EBCED DEĞERİ</div>
-                <div class="result-value" id="resultValue">0</div>
-                <div class="result-details" id="resultDetails">
-                    Hesaplama sonuçları burada görünecek...
-                </div>
-                <div class="char-list" id="charList">
-                    <!-- Harf ve değerleri burada görünecek -->
-                </div>
+            <div class="stat-box">
+                <div>Gemiddelde FPS</div>
+                <div class="stat-value" id="avgFps">0</div>
+                <div>Over de testperiode</div>
+            </div>
+            <div class="stat-box">
+                <div>Minimale FPS</div>
+                <div class="stat-value" id="minFps">0</div>
+                <div>Laagste gemeten waarde</div>
             </div>
         </div>
         
-        <div class="footer">
-            <p>Ebced hesabı, harflerin sayısal değerleri üzerinden yapılan bir hesap yöntemidir.</p>
+        <div class="controls">
+            <button id="startBtn">Start Test</button>
+            <button id="stopBtn" disabled>Stop Test</button>
+            <button id="resetBtn">Reset</button>
+        </div>
+        
+        <div class="test-options">
+            <button class="option-btn active" data-complexity="low">Lage Complexiteit</button>
+            <button class="option-btn" data-complexity="medium">Medium Complexiteit</button>
+            <button class="option-btn" data-complexity="high">Hoge Complexiteit</button>
+        </div>
+        
+        <div class="canvas-container">
+            <canvas id="gpuCanvas"></canvas>
+        </div>
+        
+        <div class="results">
+            <h3>Testresultaten</h3>
+            <div class="result-item">
+                <span>Testduur:</span>
+                <span id="testDuration">0 seconden</span>
+            </div>
+            <div class="result-item">
+                <span>Totaal frames:</span>
+                <span id="totalFrames">0</span>
+            </div>
+            <div class="result-item">
+                <span>Gemiddelde FPS:</span>
+                <span id="resultAvgFps">0</span>
+            </div>
+            <div class="result-item">
+                <span>Minimale FPS:</span>
+                <span id="resultMinFps">0</span>
+            </div>
+            <div class="result-item">
+                <span>Maximale FPS:</span>
+                <span id="resultMaxFps">0</span>
+            </div>
+            <div class="result-item">
+                <span>Beoordeling:</span>
+                <span id="performanceRating">-</span>
+            </div>
         </div>
     </div>
 
     <script>
-        // Ebced değerleri - Arapça
-        const arabicAbjad = {
-            'ا': 1, 'أ': 1, 'إ': 1, 'آ': 1, 'ء': 1,
-            'ب': 2, 'ج': 3, 'د': 4, 'ه': 5, 'ة': 5,
-            'و': 6, 'ؤ': 6, 'ز': 7, 'ح': 8, 'ط': 9,
-            'ي': 10, 'ى': 10, 'ئ': 10, 'ك': 20, 'ل': 30,
-            'م': 40, 'ن': 50, 'س': 60, 'ع': 70, 'ف': 80,
-            'ص': 90, 'ق': 100, 'ر': 200, 'ش': 300, 'ت': 400,
-            'ث': 500, 'خ': 600, 'ذ': 700, 'ض': 800, 'ظ': 900,
-            'غ': 1000
-        };
-        
-        // Ebced değerleri - Türkçe
-        const turkishAbjad = {
-            'ا': 1, 'أ': 1, 'إ': 1, 'آ': 1, 'ء': 1,
-            'ب': 2, 'پ': 2, 'ج': 3, 'چ': 3, 'د': 4,
-            'ه': 5, 'ة': 5, 'و': 6, 'ؤ': 6, 'ز': 7,
-            'ژ': 7, 'ح': 8, 'ط': 9, 'ي': 10, 'ى': 10,
-            'ئ': 10, 'ك': 20, 'ک': 20, 'ل': 30, 'م': 40,
-            'ن': 50, 'س': 60, 'ع': 70, 'ف': 80, 'ص': 90,
-            'ق': 100, 'ر': 200, 'ش': 300, 'ت': 400, 'ث': 500,
-            'خ': 600, 'ذ': 700, 'ض': 800, 'ظ': 900, 'غ': 1000,
-            'ğ': 1000, 'ü': 1000, 'ş': 300, 'i': 10, 'ı': 10,
-            'ö': 70, 'ç': 3, 'a': 1, 'b': 2, 'c': 3,
-            'd': 4, 'e': 5, 'f': 80, 'g': 1000, 'h': 5,
-            'j': 3, 'k': 20, 'l': 30, 'm': 40, 'n': 50,
-            'o': 70, 'p': 2, 'q': 100, 'r': 200, 's': 60,
-            't': 400, 'u': 6, 'v': 6, 'w': 6, 'x': 600,
-            'y': 10, 'z': 7
-        };
-        
-        let currentLanguage = 'arabic';
-        
-        // Dil seçeneklerini ayarla
-        document.querySelectorAll('.lang-option').forEach(option => {
-            option.addEventListener('click', function() {
-                document.querySelectorAll('.lang-option').forEach(opt => {
-                    opt.classList.remove('active');
+        document.addEventListener('DOMContentLoaded', function() {
+            // Canvas en context
+            const canvas = document.getElementById('gpuCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Knoppen
+            const startBtn = document.getElementById('startBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const optionBtns = document.querySelectorAll('.option-btn');
+            
+            // Statistische elementen
+            const fpsElement = document.getElementById('fps');
+            const avgFpsElement = document.getElementById('avgFps');
+            const minFpsElement = document.getElementById('minFps');
+            const totalFramesElement = document.getElementById('totalFrames');
+            const testDurationElement = document.getElementById('testDuration');
+            const resultAvgFpsElement = document.getElementById('resultAvgFps');
+            const resultMinFpsElement = document.getElementById('resultMinFps');
+            const resultMaxFpsElement = document.getElementById('resultMaxFps');
+            const performanceRatingElement = document.getElementById('performanceRating');
+            
+            // Testvariabelen
+            let animationId = null;
+            let testRunning = false;
+            let startTime = 0;
+            let lastFrameTime = 0;
+            let frameCount = 0;
+            let totalFrameCount = 0;
+            let fpsValues = [];
+            let currentComplexity = 'low';
+            
+            // Canvas grootte instellen
+            function resizeCanvas() {
+                canvas.width = canvas.clientWidth;
+                canvas.height = canvas.clientHeight;
+            }
+            
+            // Initialiseer canvas
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Complexiteit knoppen
+            optionBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    optionBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentComplexity = this.getAttribute('data-complexity');
                 });
-                this.classList.add('active');
-                currentLanguage = this.getAttribute('data-lang');
             });
-        });
-        
-        // Hesaplama butonu
-        document.getElementById('calculateBtn').addEventListener('click', calculateAbjad);
-        
-        // Enter tuşu ile hesaplama
-        document.getElementById('textInput').addEventListener('keyup', function(event) {
-            if (event.key === 'Enter') {
-                calculateAbjad();
-            }
-        });
-        
-        // Ebced hesaplama fonksiyonu
-        function calculateAbjad() {
-            const inputText = document.getElementById('textInput').value;
-            const resultValue = document.getElementById('resultValue');
-            const resultDetails = document.getElementById('resultDetails');
-            const charList = document.getElementById('charList');
             
-            if (!inputText.trim()) {
-                resultValue.textContent = '0';
-                resultDetails.textContent = 'Lütfen bir metin girin.';
-                charList.innerHTML = '';
-                return;
-            }
-            
-            let total = 0;
-            let charValues = [];
-            const abjadValues = currentLanguage === 'arabic' ? arabicAbjad : turkishAbjad;
-            
-            // Metni harf harf işle
-            for (let char of inputText) {
-                const lowerChar = char.toLowerCase();
-                const value = abjadValues[lowerChar] || abjadValues[char] || 0;
+            // Start test
+            startBtn.addEventListener('click', function() {
+                if (testRunning) return;
                 
-                if (value > 0) {
-                    total += value;
-                    charValues.push({ char, value });
+                testRunning = true;
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+                
+                startTime = performance.now();
+                lastFrameTime = startTime;
+                frameCount = 0;
+                totalFrameCount = 0;
+                fpsValues = [];
+                
+                animate();
+            });
+            
+            // Stop test
+            stopBtn.addEventListener('click', function() {
+                if (!testRunning) return;
+                
+                testRunning = false;
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+                
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                    animationId = null;
+                }
+                
+                calculateResults();
+            });
+            
+            // Reset test
+            resetBtn.addEventListener('click', function() {
+                if (testRunning) {
+                    cancelAnimationFrame(animationId);
+                    testRunning = false;
+                }
+                
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+                
+                fpsElement.textContent = '0';
+                avgFpsElement.textContent = '0';
+                minFpsElement.textContent = '0';
+                totalFramesElement.textContent = '0';
+                testDurationElement.textContent = '0 seconden';
+                resultAvgFpsElement.textContent = '0';
+                resultMinFpsElement.textContent = '0';
+                resultMaxFpsElement.textContent = '0';
+                performanceRatingElement.textContent = '-';
+                
+                // Wis canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            });
+            
+            // Animatielus
+            function animate() {
+                if (!testRunning) return;
+                
+                animationId = requestAnimationFrame(animate);
+                
+                const currentTime = performance.now();
+                const deltaTime = currentTime - lastFrameTime;
+                
+                // Bereken FPS
+                if (deltaTime > 0) {
+                    const fps = 1000 / deltaTime;
+                    fpsElement.textContent = Math.round(fps);
+                    
+                    fpsValues.push(fps);
+                    frameCount++;
+                    totalFrameCount++;
+                    
+                    // Update statistieken elke seconde
+                    if (currentTime - startTime >= 1000) {
+                        const avgFps = calculateAverageFps();
+                        const minFps = Math.min(...fpsValues);
+                        
+                        avgFpsElement.textContent = Math.round(avgFps);
+                        minFpsElement.textContent = Math.round(minFps);
+                        
+                        // Reset voor volgende seconde
+                        fpsValues = [];
+                        startTime = currentTime;
+                        frameCount = 0;
+                    }
+                }
+                
+                lastFrameTime = currentTime;
+                
+                // Render graphics op basis van complexiteit
+                renderGraphics();
+            }
+            
+            // Render graphics met verschillende complexiteitsniveaus
+            function renderGraphics() {
+                // Wis canvas
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                const time = performance.now() / 1000;
+                
+                // Bepaal parameters op basis van complexiteit
+                let objectCount, detailLevel, effectIntensity;
+                
+                switch(currentComplexity) {
+                    case 'low':
+                        objectCount = 10;
+                        detailLevel = 1;
+                        effectIntensity = 0.5;
+                        break;
+                    case 'medium':
+                        objectCount = 30;
+                        detailLevel = 2;
+                        effectIntensity = 0.7;
+                        break;
+                    case 'high':
+                        objectCount = 60;
+                        detailLevel = 3;
+                        effectIntensity = 1.0;
+                        break;
+                }
+                
+                // Teken bewegende objecten
+                for (let i = 0; i < objectCount; i++) {
+                    const x = canvas.width / 2 + Math.cos(time + i) * 100;
+                    const y = canvas.height / 2 + Math.sin(time + i) * 100;
+                    const size = 20 + Math.sin(time * 2 + i) * 10;
+                    
+                    // Kleur gradient
+                    const hue = (time * 20 + i * 10) % 360;
+                    
+                    // Teken object met verschillende complexiteitsniveaus
+                    if (detailLevel >= 1) {
+                        // Eenvoudige cirkel
+                        ctx.beginPath();
+                        ctx.arc(x, y, size, 0, Math.PI * 2);
+                        ctx.fillStyle = `hsla(${hue}, 100%, 60%, 0.7)`;
+                        ctx.fill();
+                    }
+                    
+                    if (detailLevel >= 2) {
+                        // Binnenste details
+                        ctx.beginPath();
+                        ctx.arc(x, y, size / 2, 0, Math.PI * 2);
+                        ctx.strokeStyle = `hsla(${hue}, 100%, 80%, 0.9)`;
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                    }
+                    
+                    if (detailLevel >= 3) {
+                        // Complexe patronen
+                        ctx.beginPath();
+                        for (let j = 0; j < 8; j++) {
+                            const angle = (j / 8) * Math.PI * 2;
+                            const px = x + Math.cos(angle) * size;
+                            const py = y + Math.sin(angle) * size;
+                            
+                            if (j === 0) {
+                                ctx.moveTo(px, py);
+                            } else {
+                                ctx.lineTo(px, py);
+                            }
+                        }
+                        ctx.closePath();
+                        ctx.strokeStyle = `hsla(${hue + 180}, 100%, 70%, 0.6)`;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                }
+                
+                // Voeg visuele effecten toe op basis van intensiteit
+                if (effectIntensity > 0.5) {
+                    // Particle effect
+                    for (let i = 0; i < 50 * effectIntensity; i++) {
+                        const px = Math.random() * canvas.width;
+                        const py = Math.random() * canvas.height;
+                        const psize = Math.random() * 3 * effectIntensity;
+                        
+                        ctx.beginPath();
+                        ctx.arc(px, py, psize, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(255, 255, 255, ${0.5 * effectIntensity})`;
+                        ctx.fill();
+                    }
                 }
             }
             
-            // Sonuçları göster
-            resultValue.textContent = total;
-            
-            if (charValues.length === 0) {
-                resultDetails.textContent = 'Girilen metinde ebced değeri olan harf bulunamadı.';
-                charList.innerHTML = '';
-            } else {
-                resultDetails.textContent = `"${inputText}" metninin ebced değeri: ${total}`;
+            // Bereken gemiddelde FPS
+            function calculateAverageFps() {
+                if (fpsValues.length === 0) return 0;
                 
-                // Harf listesini oluştur
-                charList.innerHTML = '';
-                charValues.forEach(item => {
-                    const charItem = document.createElement('div');
-                    charItem.className = 'char-item';
-                    charItem.innerHTML = `
-                        <div class="char">${item.char}</div>
-                        <div class="char-value">${item.value}</div>
-                    `;
-                    charList.appendChild(charItem);
-                });
+                const sum = fpsValues.reduce((a, b) => a + b, 0);
+                return sum / fpsValues.length;
             }
-        }
-        
-        // Sayfa yüklendiğinde örnek bir hesaplama yap
-        window.addEventListener('load', function() {
-            document.getElementById('textInput').value = "محمد";
-            calculateAbjad();
+            
+            // Bereken eindresultaten
+            function calculateResults() {
+                if (fpsValues.length === 0) return;
+                
+                const avgFps = calculateAverageFps();
+                const minFps = Math.min(...fpsValues);
+                const maxFps = Math.max(...fpsValues);
+                const testDuration = (performance.now() - startTime) / 1000;
+                
+                resultAvgFpsElement.textContent = Math.round(avgFps);
+                resultMinFpsElement.textContent = Math.round(minFps);
+                resultMaxFpsElement.textContent = Math.round(maxFps);
+                totalFramesElement.textContent = totalFrameCount;
+                testDurationElement.textContent = `${testDuration.toFixed(1)} seconden`;
+                
+                // Beoordeling van prestaties
+                let rating = '';
+                if (avgFps >= 55) {
+                    rating = 'Uitstekend';
+                    performanceRatingElement.style.color = '#4cd964';
+                } else if (avgFps >= 45) {
+                    rating = 'Goed';
+                    performanceRatingElement.style.color = '#5ac8fa';
+                } else if (avgFps >= 30) {
+                    rating = 'Redelijk';
+                    performanceRatingElement.style.color = '#ffcc00';
+                } else {
+                    rating = 'Matig';
+                    performanceRatingElement.style.color = '#ff3b30';
+                }
+                
+                performanceRatingElement.textContent = rating;
+            }
         });
     </script>
 </body>
