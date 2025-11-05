@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ebced Hesaplayıcı</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #4A6FA5, #2C3E50);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .input-section {
+            margin-bottom: 25px;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2C3E50;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 15px;
+            border: 2px solid #E0E0E0;
+            border-radius: 12px;
+            font-size: 18px;
+            resize: none;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #4A6FA5;
+        }
+        
+        .language-selector {
+            display: flex;
+            background-color: #F5F5F5;
+            border-radius: 12px;
+            padding: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .lang-option {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .lang-option.active {
+            background-color: #4A6FA5;
+            color: white;
+        }
+        
+        .calculate-btn {
+            background: linear-gradient(135deg, #4A6FA5, #2C3E50);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+        
+        .calculate-btn:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .results-section {
+            background-color: #F9F9F9;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .result-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #2C3E50;
+            text-align: center;
+        }
+        
+        .result-value {
+            font-size: 42px;
+            font-weight: 700;
+            text-align: center;
+            color: #4A6FA5;
+            margin: 10px 0;
+        }
+        
+        .result-details {
+            margin-top: 15px;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #555;
+        }
+        
+        .char-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+        
+        .char-item {
+            background-color: #E8EEF7;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 60px;
+        }
+        
+        .char {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .char-value {
+            font-size: 14px;
+            color: #4A6FA5;
+            margin-top: 5px;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 15px;
+            color: #777;
+            font-size: 14px;
+            border-top: 1px solid #E0E0E0;
+        }
+        
+        @media (max-width: 500px) {
+            .char-list {
+                gap: 8px;
+            }
+            
+            .char-item {
+                min-width: 55px;
+                padding: 6px 10px;
+            }
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #2C3E50 0%, #1A2530 100%);
+            }
+            
+            .container {
+                background-color: #2C3E50;
+                color: #F5F5F5;
+            }
+            
+            textarea {
+                background-color: #34495E;
+                border-color: #4A6FA5;
+                color: #F5F5F5;
+            }
+            
+            .language-selector {
+                background-color: #34495E;
+            }
+            
+            .results-section {
+                background-color: #34495E;
+            }
+            
+            .char-item {
+                background-color: #4A6FA5;
+            }
+            
+            .footer {
+                border-color: #4A6FA5;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Ebced Hesaplayıcı</h1>
+            <p class="subtitle">Arapça ve Türkçe Ebced Değerlerini Hesaplayın</p>
+        </header>
+        
+        <div class="content">
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="textInput">Metin Girin:</label>
+                    <textarea id="textInput" placeholder="Ebced değerini hesaplamak istediğiniz metni buraya yazın..."></textarea>
+                </div>
+                
+                <div class="language-selector">
+                    <div class="lang-option active" data-lang="arabic">Arapça</div>
+                    <div class="lang-option" data-lang="turkish">Türkçe</div>
+                </div>
+                
+                <button class="calculate-btn" id="calculateBtn">HESAPLA</button>
+            </div>
+            
+            <div class="results-section">
+                <div class="result-title">EBCED DEĞERİ</div>
+                <div class="result-value" id="resultValue">0</div>
+                <div class="result-details" id="resultDetails">
+                    Hesaplama sonuçları burada görünecek...
+                </div>
+                <div class="char-list" id="charList">
+                    <!-- Harf ve değerleri burada görünecek -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Ebced hesabı, harflerin sayısal değerleri üzerinden yapılan bir hesap yöntemidir.</p>
+        </div>
+    </div>
+
+    <script>
+        // Ebced değerleri - Arapça
+        const arabicAbjad = {
+            'ا': 1, 'أ': 1, 'إ': 1, 'آ': 1, 'ء': 1,
+            'ب': 2, 'ج': 3, 'د': 4, 'ه': 5, 'ة': 5,
+            'و': 6, 'ؤ': 6, 'ز': 7, 'ح': 8, 'ط': 9,
+            'ي': 10, 'ى': 10, 'ئ': 10, 'ك': 20, 'ل': 30,
+            'م': 40, 'ن': 50, 'س': 60, 'ع': 70, 'ف': 80,
+            'ص': 90, 'ق': 100, 'ر': 200, 'ش': 300, 'ت': 400,
+            'ث': 500, 'خ': 600, 'ذ': 700, 'ض': 800, 'ظ': 900,
+            'غ': 1000
+        };
+        
+        // Ebced değerleri - Türkçe
+        const turkishAbjad = {
+            'ا': 1, 'أ': 1, 'إ': 1, 'آ': 1, 'ء': 1,
+            'ب': 2, 'پ': 2, 'ج': 3, 'چ': 3, 'د': 4,
+            'ه': 5, 'ة': 5, 'و': 6, 'ؤ': 6, 'ز': 7,
+            'ژ': 7, 'ح': 8, 'ط': 9, 'ي': 10, 'ى': 10,
+            'ئ': 10, 'ك': 20, 'ک': 20, 'ل': 30, 'م': 40,
+            'ن': 50, 'س': 60, 'ع': 70, 'ف': 80, 'ص': 90,
+            'ق': 100, 'ر': 200, 'ش': 300, 'ت': 400, 'ث': 500,
+            'خ': 600, 'ذ': 700, 'ض': 800, 'ظ': 900, 'غ': 1000,
+            'ğ': 1000, 'ü': 1000, 'ş': 300, 'i': 10, 'ı': 10,
+            'ö': 70, 'ç': 3, 'a': 1, 'b': 2, 'c': 3,
+            'd': 4, 'e': 5, 'f': 80, 'g': 1000, 'h': 5,
+            'j': 3, 'k': 20, 'l': 30, 'm': 40, 'n': 50,
+            'o': 70, 'p': 2, 'q': 100, 'r': 200, 's': 60,
+            't': 400, 'u': 6, 'v': 6, 'w': 6, 'x': 600,
+            'y': 10, 'z': 7
+        };
+        
+        let currentLanguage = 'arabic';
+        
+        // Dil seçeneklerini ayarla
+        document.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.lang-option').forEach(opt => {
+                    opt.classList.remove('active');
+                });
+                this.classList.add('active');
+                currentLanguage = this.getAttribute('data-lang');
+            });
+        });
+        
+        // Hesaplama butonu
+        document.getElementById('calculateBtn').addEventListener('click', calculateAbjad);
+        
+        // Enter tuşu ile hesaplama
+        document.getElementById('textInput').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                calculateAbjad();
+            }
+        });
+        
+        // Ebced hesaplama fonksiyonu
+        function calculateAbjad() {
+            const inputText = document.getElementById('textInput').value;
+            const resultValue = document.getElementById('resultValue');
+            const resultDetails = document.getElementById('resultDetails');
+            const charList = document.getElementById('charList');
+            
+            if (!inputText.trim()) {
+                resultValue.textContent = '0';
+                resultDetails.textContent = 'Lütfen bir metin girin.';
+                charList.innerHTML = '';
+                return;
+            }
+            
+            let total = 0;
+            let charValues = [];
+            const abjadValues = currentLanguage === 'arabic' ? arabicAbjad : turkishAbjad;
+            
+            // Metni harf harf işle
+            for (let char of inputText) {
+                const lowerChar = char.toLowerCase();
+                const value = abjadValues[lowerChar] || abjadValues[char] || 0;
+                
+                if (value > 0) {
+                    total += value;
+                    charValues.push({ char, value });
+                }
+            }
+            
+            // Sonuçları göster
+            resultValue.textContent = total;
+            
+            if (charValues.length === 0) {
+                resultDetails.textContent = 'Girilen metinde ebced değeri olan harf bulunamadı.';
+                charList.innerHTML = '';
+            } else {
+                resultDetails.textContent = `"${inputText}" metninin ebced değeri: ${total}`;
+                
+                // Harf listesini oluştur
+                charList.innerHTML = '';
+                charValues.forEach(item => {
+                    const charItem = document.createElement('div');
+                    charItem.className = 'char-item';
+                    charItem.innerHTML = `
+                        <div class="char">${item.char}</div>
+                        <div class="char-value">${item.value}</div>
+                    `;
+                    charList.appendChild(charItem);
+                });
+            }
+        }
+        
+        // Sayfa yüklendiğinde örnek bir hesaplama yap
+        window.addEventListener('load', function() {
+            document.getElementById('textInput').value = "محمد";
+            calculateAbjad();
+        });
+    </script>
+</body>
+</html>
